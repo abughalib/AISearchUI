@@ -1,0 +1,192 @@
+import React, { useState, useEffect } from "react";
+import { useActions } from "../hooks/use-actions";
+import { useTypedSelector } from "../hooks/use-typed-selector";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faDeleteLeft } from "@fortawesome/free-solid-svg-icons";
+import { deleteKnowledgeBase } from "../state/action-creators";
+
+interface Modalprops {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const SEARCH_BASES_URL = "https://localhost:8000/search_bases";
+const CREATE_KNOWLEDGE_BASE_URL = "https://localhost:8000/create_table";
+const DELETE_KNOWLEDGE_BASE_URL = "https://localhost:8000/delete_table";
+
+const DBWindow: React.FC<Modalprops> = ({ isOpen, onClose }) => {
+  const currentTable = useTypedSelector(
+    (state) => state.knowledgeReducer?.table_name
+  );
+
+  const { changeKnowledgeBase, createKnowledgeBase } = useActions();
+
+  const modalRef = React.useRef<HTMLDivElement>(null);
+  const newTableNameRef = React.useRef<HTMLInputElement>(null);
+
+  const [knowledgeBases, setKnowledgeBases] = useState<string[]>([
+    "Knowledge Base 1",
+    "Knowledge Base 2",
+  ]);
+
+  const closeModal = (e: React.MouseEvent) => {
+    if (modalRef.current && e.target === modalRef.current) {
+      onClose();
+    }
+  };
+
+  const createKnowledgeBaseRequest = async (knowledgeBaseName: string) => {
+    const headers = new Headers();
+    headers.set("Content-Type", "application/json");
+
+    let resp = await fetch(CREATE_KNOWLEDGE_BASE_URL, {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify({
+        table_name: knowledgeBaseName,
+      }),
+    });
+
+    if (resp.status === 200) {
+      setKnowledgeBases((cur) => [...cur, knowledgeBaseName]);
+      createKnowledgeBase(knowledgeBaseName);
+      return true;
+    }
+    return false;
+  };
+
+  const deleteKnowledgeBaseRequest = async (knowledgeBaseName: string) => {
+    const headers = new Headers();
+    headers.set("Content-Type", "application/json");
+
+    let resp = await fetch(DELETE_KNOWLEDGE_BASE_URL, {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify({
+        table_name: knowledgeBaseName,
+      }),
+    });
+
+    if (resp.status === 200) {
+      setKnowledgeBases((cur) => cur.filter((kb) => kb !== knowledgeBaseName));
+      if (currentTable === knowledgeBaseName) {
+        changeKnowledgeBase(knowledgeBases[0] || "");
+      }
+      return true;
+    }
+    return false;
+  };
+
+  useEffect(() => {
+    const fetchKbData = async () => {
+      const resp = await fetch(SEARCH_BASES_URL, {
+        method: "POST",
+      });
+      const jsonResp: string[] = await resp.json();
+
+      setKnowledgeBases(jsonResp);
+    };
+    fetchKbData();
+  }, []);
+
+  useEffect(() => {
+    createKnowledgeBase(knowledgeBases[0] || "");
+  }, [knowledgeBases]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div
+      className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
+      id="upload_modal"
+      ref={modalRef}
+      onClick={closeModal}
+    >
+      <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-black dark:text-white">
+        <div className="mt-3 text-center">
+          <h3 className="text-lg leading-6 font-medium">
+            Select The Knowledge Base
+          </h3>
+          <div className="mt-2 px-7 py-3">
+            <div className="my-1 flex justify-start">
+              <ul>
+                {knowledgeBases.map((val, index) => {
+                  return (
+                    <li className="flex flex-row" key={index}>
+                      <label className="flex justify-start mx-2 overflow-auto">
+                        <input
+                          className="mx-2"
+                          type="radio"
+                          checked={currentTable === val}
+                          onChange={() => {
+                            changeKnowledgeBase(val);
+                          }}
+                        />
+                        {val}
+                      </label>
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          await deleteKnowledgeBase(val);
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faDeleteLeft} />
+                      </button>
+                    </li>
+                  );
+                })}
+                <li>
+                  <label className="flex justify-start mx-7">
+                    <input
+                      ref={newTableNameRef}
+                      className="mx-2 w-32 rounded outline-none border-2 border-solid dark:bg-gray-700 dark:text-white"
+                      type="text"
+                      placeholder="Create New"
+                    />
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        if (newTableNameRef.current) {
+                          const new_name = newTableNameRef
+                            .current!.value.trim()
+                            .split(" ")
+                            .join("_");
+
+                          if (newTableNameRef.current!.value.length === 0) {
+                            newTableNameRef.current!.style.border =
+                              "1px solid red";
+                            newTableNameRef.current!.value = "Empty";
+                            return;
+                          }
+                          if (knowledgeBases.includes(new_name)) {
+                            newTableNameRef.current!.style.border =
+                              "1px solid red";
+                            return;
+                          }
+                          await createKnowledgeBaseRequest(new_name);
+                        }
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faPlus} />
+                    </button>
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="items-center px-4 py-3">
+            <button
+              id="upload_button"
+              className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onClick={onClose}
+            >
+              Select
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default DBWindow;
