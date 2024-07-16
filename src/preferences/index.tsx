@@ -79,7 +79,7 @@ export const PreferencesWindow: React.FC<ModalProps> = ({
       ref={modalRef}
       onClick={closeModal}
     >
-      <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-black dark:text-white">
+      <div className="relative width-25p top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-black dark:text-white">
         <div className="mt-3 text-center">
           <h3 className="text-lg leading-6 font-medium">Your Preferences</h3>
           <div className="mt-2 px-7 py-3 preference-table">

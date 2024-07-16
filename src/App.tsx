@@ -254,12 +254,14 @@ const App = () => {
               </div>
             </div>
           )}
-          <UploadWindow
-            isOpen={isModalOpen}
-            onClose={() => setModalOpen(false)}
-          />
-          <div className="h-16 flex-shrink-0 content-center">
-            <div className="flex flex-row justify-evenly h-15 content-center m-auto">
+        </div>
+        <UploadWindow
+          isOpen={isModalOpen}
+          onClose={() => setModalOpen(false)}
+        />
+        <div className="flex items-center h-16 flex-shrink-0 content-center">
+          <div className="flex flex-row justify-evenly h-15 content-center m-auto">
+            <div className="p-1 w-1/6 flex justify-center">
               <button
                 className="text-sky-800"
                 type="button"
@@ -269,38 +271,41 @@ const App = () => {
                 <FontAwesomeIcon icon={faFileImport} size="2x" />
               </button>
             </div>
-            <div className="rounded w-4/5 m-auto">
-              <input
-                ref={inputRef}
-                value={prompt}
-                className="outline-0 border-solid border-2 rounded span w-full height-footer-fields px-2 overflow-x-auto dark:bg-gray-800"
-                placeholder="Type your prompt here..."
-                onKeyDown={handleEnterPress}
-                onChange={(e) => {
-                  if (e.target.value.trim().length > 0) {
-                    setPrompt(e.target.value.trim());
-                    if (inputRef.current) {
-                      inputRef.current.style.borderColor = "unset";
-                    }
-                  } else {
-                    if (inputRef.current) {
-                      inputRef.current.placeholder =
-                        "Your Prompt should not be empty";
-                      setPrompt("");
-                    }
+          </div>
+          <div className="rounded w-4/5 m-auto">
+            <input
+              ref={inputRef}
+              value={prompt}
+              className="outline-0 border-solid border-2 rounded span w-full height-footer-fields px-2 overflow-x-auto dark:bg-gray-800"
+              placeholder="Type your prompt here..."
+              onKeyDown={handleEnterPress}
+              onChange={(e) => {
+                if (e.target.value.trim().length > 0) {
+                  setPrompt(e.target.value.trim());
+                  if (inputRef.current) {
+                    inputRef.current.style.borderColor = "unset";
                   }
-                }}
-              />
-            </div>
-            <div className="p-1 width-10">
-                <button className="box-border bg-blue-500 rounded p-2 w-full"
-                onClick={async (e) => {
-                  e.preventDefault();
-                  sendPrompt(prompt);
-                }} type="button">
-                  Search
-                </button>
-            </div>
+                } else {
+                  if (inputRef.current) {
+                    inputRef.current.placeholder =
+                      "Your Prompt should not be empty";
+                    setPrompt("");
+                  }
+                }
+              }}
+            />
+          </div>
+          <div className="p-1 w-1/6">
+            <button
+              className="box-border bg-blue-500 rounded p-2 w-full"
+              onClick={async (e) => {
+                e.preventDefault();
+                sendPrompt(prompt);
+              }}
+              type="button"
+            >
+              Search
+            </button>
           </div>
         </div>
       </div>
