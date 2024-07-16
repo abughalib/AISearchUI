@@ -5,9 +5,10 @@ import UploadWindow from "./uploads";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileImport } from "@fortawesome/free-solid-svg-icons";
 import { useTypedSelector } from "./hooks/use-typed-selector";
-import "./App.css";
 import { ChatDialog } from "./chat/indvChat";
 import AppHeader from "./header/header";
+import "./"
+import "./App.css";
 
 function createDialog(chatDetail: ChatDetails, index: number) {
   const alignmentClass =
@@ -273,7 +274,7 @@ const App = () => {
               <input
                 ref={inputRef}
                 value={prompt}
-                className="outline-0 border-solid border-2 rounded span width-100 height-footer-fields px-2 overflow-x-auto dark:bg-gray-800"
+                className="outline-0 border-solid border-2 rounded span w-full height-footer-fields px-2 overflow-x-auto dark:bg-gray-800"
                 placeholder="Type your prompt here..."
                 onKeyDown={handleEnterPress}
                 onChange={(e) => {
