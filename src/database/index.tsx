@@ -72,6 +72,7 @@ const DBWindow: React.FC<Modalprops> = ({ isOpen, onClose }) => {
       if (currentTable === knowledgeBaseName) {
         changeKnowledgeBase(knowledgeBases[0] || "");
       }
+      deleteKnowledgeBase(knowledgeBaseName);
       return true;
     }
     return false;
@@ -127,7 +128,7 @@ const DBWindow: React.FC<Modalprops> = ({ isOpen, onClose }) => {
                       <button
                         type="button"
                         onClick={async () => {
-                          await deleteKnowledgeBase(val);
+                          deleteKnowledgeBaseRequest(val);
                         }}
                       >
                         <FontAwesomeIcon icon={faDeleteLeft} />

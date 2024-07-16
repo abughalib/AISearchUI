@@ -269,7 +269,7 @@ const App = () => {
                 <FontAwesomeIcon icon={faFileImport} size="2x" />
               </button>
             </div>
-            <div className="rounded width-80 m-auto">
+            <div className="rounded w-4/5 m-auto">
               <input
                 ref={inputRef}
                 value={prompt}
