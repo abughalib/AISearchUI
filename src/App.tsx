@@ -7,7 +7,6 @@ import { faFileImport } from "@fortawesome/free-solid-svg-icons";
 import { useTypedSelector } from "./hooks/use-typed-selector";
 import { ChatDialog } from "./chat/indvChat";
 import AppHeader from "./header/header";
-import "./"
 import "./App.css";
 
 function createDialog(chatDetail: ChatDetails, index: number) {
