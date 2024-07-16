@@ -23,21 +23,27 @@ const chatHistory: React.FC<ChatWindowProps> = ({ isOpen, onClose }) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutSide);
     };
-
   }, [onClose]);
 
   if (!isOpen) return null;
 
   return (
-    <div ref={historyRef} className="fixed top-0 left-0 h-full w-64 bg-gray-800 text-white overflow-auto">
-        <button className="absolute top-0 right-0 m-2" type="button" onClick={onClose}>
-            <FontAwesomeIcon icon={faXmarkCircle} />
-        </button>
-        <div className="my-2 flex justify-center font-bold">
-            <p>Chat History</p>
-        </div>
+    <div
+      ref={historyRef}
+      className="fixed top-0 left-0 h-full w-64 bg-gray-800 text-white overflow-auto"
+    >
+      <button
+        className="absolute top-0 right-0 m-2"
+        type="button"
+        onClick={onClose}
+      >
+        <FontAwesomeIcon icon={faXmarkCircle} />
+      </button>
+      <div className="my-2 flex justify-center font-bold">
+        <p>Chat History</p>
+      </div>
     </div>
-  )
+  );
 };
 
 export default chatHistory;

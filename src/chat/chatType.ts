@@ -1,4 +1,4 @@
 export interface ChatDetails {
-    text: string;
-    user: "AI" | "USER"
+  text: string;
+  user: "AI" | "USER";
 }

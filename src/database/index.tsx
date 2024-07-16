@@ -16,7 +16,7 @@ const DELETE_KNOWLEDGE_BASE_URL = "https://localhost:8000/delete_table";
 
 const DBWindow: React.FC<Modalprops> = ({ isOpen, onClose }) => {
   const currentTable = useTypedSelector(
-    (state) => state.knowledgeReducer?.table_name
+    (state) => state.knowledgeReducer?.table_name,
   );
 
   const { changeKnowledgeBase, createKnowledgeBase } = useActions();

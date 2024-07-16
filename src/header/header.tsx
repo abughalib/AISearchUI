@@ -9,7 +9,13 @@ import {
 } from "../state/reducers/infModelReducer";
 import { useTypedSelector } from "../hooks/use-typed-selector";
 import { useActions } from "../hooks/use-actions";
-import { faClockRotateLeft, faDatabase, faGear, faMoon, faPuzzlePiece } from "@fortawesome/free-solid-svg-icons";
+import {
+  faClockRotateLeft,
+  faDatabase,
+  faGear,
+  faMoon,
+  faPuzzlePiece,
+} from "@fortawesome/free-solid-svg-icons";
 import ChatHistory from "../chat/ChatHistory";
 import PreferencesWindow from "../preferences";
 
@@ -22,7 +28,7 @@ const AppHeader = () => {
   ];
 
   const currentTable = useTypedSelector(
-    (state) => state.knowledgeReducer?.table_name || ""
+    (state) => state.knowledgeReducer?.table_name || "",
   );
 
   const { changeInfModel } = useActions();
@@ -41,12 +47,12 @@ const AppHeader = () => {
 
   const selectedDeployment = useTypedSelector(
     (state) =>
-      state.infModelReducer?.deployment || availableModels[0].deployment || ""
+      state.infModelReducer?.deployment || availableModels[0].deployment || "",
   );
 
   const selectedModel = useTypedSelector(
     (state) =>
-      state.infModelReducer?.model_name || availableModels[0].model_name || ""
+      state.infModelReducer?.model_name || availableModels[0].model_name || "",
   );
 
   // Manage state of Modals
@@ -59,62 +65,75 @@ const AppHeader = () => {
     <div className="flex h-15 p-1">
       <div className="p-1 vertical-center icon">
         <a onClick={() => setIsChatHistoryOpen(!isChatHistoryOpen)}>
-          <FontAwesomeIcon
-            icon={faClockRotateLeft}
-            size="2x"
-          ></FontAwesomeIcon>
+          <FontAwesomeIcon icon={faClockRotateLeft} size="2x"></FontAwesomeIcon>
         </a>
         <div>
-            {isChatHistoryOpen && (<ChatHistory isOpen={isChatHistoryOpen} onClose={() => {setIsChatHistoryOpen(false)}} />)}
+          {isChatHistoryOpen && (
+            <ChatHistory
+              isOpen={isChatHistoryOpen}
+              onClose={() => {
+                setIsChatHistoryOpen(false);
+              }}
+            />
+          )}
         </div>
       </div>
       <div className="vertical-center">
-        <select className="outline-0 p-1 vertical-center dark:bg-black"
-        onChange={(e) => setInferencingModel(e.target.value)}
-        defaultValue={`${selectedDeployment}/${selectedModel}`}>
+        <select
+          className="outline-0 p-1 vertical-center dark:bg-black"
+          onChange={(e) => setInferencingModel(e.target.value)}
+          defaultValue={`${selectedDeployment}/${selectedModel}`}
+        >
           {availableModels.map((model, index) => {
             return (
               <option key={`${index}`}>
                 {model.deployment}/{model.model_name}
               </option>
-            )
+            );
           })}
         </select>
       </div>
       <div className="flex flex-row vertical-center">
-          <div className="p-1 icon tooltip">
-            <a className="text-sky-600" onClick={() => setIsDBOpen(true)}>
-              <FontAwesomeIcon icon={faDatabase} size="2x"/>
-            </a>
-            <p className="tooltiptext">Selected: {currentTable}</p>
-          </div>
-          <DBWindow isOpen={isDBOpen} onClose={() => setIsDBOpen(false)} />
-          <ExtensionWindow isOpen={isExtensionOpen} onClose={() => setIsExtensionOpen(false)} />
-          <PreferencesWindow isOpen={isPreferenceOpen} onClose={() => setIsPreferenceOpen(false)}/>
-          <div className="p-1 icon">
-            <a className="text-sky-600" onClick={() => setIsExtensionOpen(true)}>
-              <FontAwesomeIcon icon={faPuzzlePiece} size="2x"/>
-            </a>
-          </div>
-          <div id="dark_mode" className="p-1 icon">
-            <a className="dark:text-white"
-              onClick={() => {
-                document.documentElement.classList.toggle("dark");
-                if (localStorage.getItem("theme") === "dark") {
-                  localStorage.setItem("theme", "light");
-                } else {
-                  localStorage.setItem("theme", "dark");
-                }
-              }}
-            >
-              <FontAwesomeIcon icon={faMoon} size="2x"/>
-            </a>
-          </div>
-          <div className="p-1 icon">
-            <a className="text-sky-600" onClick={() => setIsPreferenceOpen(true)}>
-              <FontAwesomeIcon icon={faGear} size="2x"/>
-            </a>
-          </div>
+        <div className="p-1 icon tooltip">
+          <a className="text-sky-600" onClick={() => setIsDBOpen(true)}>
+            <FontAwesomeIcon icon={faDatabase} size="2x" />
+          </a>
+          <p className="tooltiptext">Selected: {currentTable}</p>
+        </div>
+        <DBWindow isOpen={isDBOpen} onClose={() => setIsDBOpen(false)} />
+        <ExtensionWindow
+          isOpen={isExtensionOpen}
+          onClose={() => setIsExtensionOpen(false)}
+        />
+        <PreferencesWindow
+          isOpen={isPreferenceOpen}
+          onClose={() => setIsPreferenceOpen(false)}
+        />
+        <div className="p-1 icon">
+          <a className="text-sky-600" onClick={() => setIsExtensionOpen(true)}>
+            <FontAwesomeIcon icon={faPuzzlePiece} size="2x" />
+          </a>
+        </div>
+        <div id="dark_mode" className="p-1 icon">
+          <a
+            className="dark:text-white"
+            onClick={() => {
+              document.documentElement.classList.toggle("dark");
+              if (localStorage.getItem("theme") === "dark") {
+                localStorage.setItem("theme", "light");
+              } else {
+                localStorage.setItem("theme", "dark");
+              }
+            }}
+          >
+            <FontAwesomeIcon icon={faMoon} size="2x" />
+          </a>
+        </div>
+        <div className="p-1 icon">
+          <a className="text-sky-600" onClick={() => setIsPreferenceOpen(true)}>
+            <FontAwesomeIcon icon={faGear} size="2x" />
+          </a>
+        </div>
       </div>
     </div>
   );

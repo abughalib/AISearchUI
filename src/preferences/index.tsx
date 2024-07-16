@@ -16,7 +16,7 @@ export const PreferencesWindow: React.FC<ModalProps> = ({
   const modalRef = useRef<HTMLDivElement>(null);
 
   const currentTable = useTypedSelector(
-    (state) => state.knowledgeReducer?.table_name || ""
+    (state) => state.knowledgeReducer?.table_name || "",
   );
 
   const closeModal = (e: React.MouseEvent) => {
@@ -26,35 +26,35 @@ export const PreferencesWindow: React.FC<ModalProps> = ({
   };
 
   const max_similar_search = useTypedSelector(
-    (state) => state.preferenceReducer?.max_similar_search
+    (state) => state.preferenceReducer?.max_similar_search,
   );
 
   const upper_chunk = useTypedSelector(
-    (state) => state.preferenceReducer?.upper_chunk
+    (state) => state.preferenceReducer?.upper_chunk,
   );
 
   const lower_chunk = useTypedSelector(
-    (state) => state.preferenceReducer?.lower_chunk
+    (state) => state.preferenceReducer?.lower_chunk,
   );
 
   const temperature = useTypedSelector(
-    (state) => state.preferenceReducer?.inference_temperature
+    (state) => state.preferenceReducer?.inference_temperature,
   );
 
   const seed = useTypedSelector(
-    (state) => state.preferenceReducer?.inference_seed
+    (state) => state.preferenceReducer?.inference_seed,
   );
 
   const top_p = useTypedSelector(
-    (state) => state.preferenceReducer?.inference_top_p
+    (state) => state.preferenceReducer?.inference_top_p,
   );
 
   const repeat_penalty = useTypedSelector(
-    (state) => state.preferenceReducer?.repeat_penalty
+    (state) => state.preferenceReducer?.repeat_penalty,
   );
 
   const repeat_last_n = useTypedSelector(
-    (state) => state.preferenceReducer?.repeat_last_n
+    (state) => state.preferenceReducer?.repeat_last_n,
   );
 
   const {

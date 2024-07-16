@@ -11,7 +11,7 @@ const UPLOAD_URL = "http://localhost:8000/handle_upload";
 const uploadFiles = async (
   files: FileList,
   setUploadStatus: React.Dispatch<React.SetStateAction<string>>,
-  table_name: string
+  table_name: string,
 ) => {
   const formData = new FormData();
 
@@ -40,7 +40,7 @@ const uploadFiles = async (
 
 const UploadWindow: React.FC<ModelProps> = ({ isOpen, onClose }) => {
   const currentTable = useTypedSelector(
-    (state) => state.knowledgeReducer?.table_name || ""
+    (state) => state.knowledgeReducer?.table_name || "",
   );
 
   const [uploadStatus, setUploadStatus] = useState<string>("");
@@ -54,7 +54,7 @@ const UploadWindow: React.FC<ModelProps> = ({ isOpen, onClose }) => {
 
   const handleUploadClick = () => {
     const inputElement = document.getElementById(
-      "file_input"
+      "file_input",
     ) as HTMLInputElement;
 
     if (inputElement) {
