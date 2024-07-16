@@ -131,7 +131,7 @@ const App = () => {
 
   const handleEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      setPrompt(prompt);
+      sendPrompt(prompt);
     }
   };
 
@@ -281,7 +281,7 @@ const App = () => {
               onKeyDown={handleEnterPress}
               onChange={(e) => {
                 if (e.target.value.trim().length > 0) {
-                  setPrompt(e.target.value.trim());
+                  setPrompt(e.target.value);
                   if (inputRef.current) {
                     inputRef.current.style.borderColor = "unset";
                   }
