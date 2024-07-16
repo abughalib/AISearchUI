@@ -238,6 +238,71 @@ const App = () => {
         <div className="h-16 flex-shrink-0 content-center">
           <AppHeader />
         </div>
+        <div
+          ref={chatWindowRef}
+          className="flex-grow space-y-4 overflow-auto bg-blue-100 p-3 dark:bg-gray-900"
+        >
+          {chatdetails.map((chatDetail, index) => {
+            return createDialog(chatDetail, index);
+          })}
+          {isSearching && (
+            <div className="flex justify-start my-2">
+              <div className="w-4/5 rounded box-border">
+                <div className="shadow-2xl shadow-indigo-500/40 box-border overflow-auto p-2 rounded m-1 whitespace-pre-line bg-green-800 float-left clear-left">
+                  <div className="typing-indicator">Searching Data</div>
+                </div>
+              </div>
+            </div>
+          )}
+          <UploadWindow
+            isOpen={isModalOpen}
+            onClose={() => setModalOpen(false)}
+          />
+          <div className="h-16 flex-shrink-0 content-center">
+            <div className="flex flex-row justify-evenly h-15 content-center m-auto">
+              <button
+                className="text-sky-800"
+                type="button"
+                style={{ transition: "all .15s ease" }}
+                onClick={() => setModalOpen(true)}
+              >
+                <FontAwesomeIcon icon={faFileImport} size="2x" />
+              </button>
+            </div>
+            <div className="rounded width-80 m-auto">
+              <input
+                ref={inputRef}
+                value={prompt}
+                className="outline-0 border-solid border-2 rounded span width-100 height-footer-fields px-2 overflow-x-auto dark:bg-gray-800"
+                placeholder="Type your prompt here..."
+                onKeyDown={handleEnterPress}
+                onChange={(e) => {
+                  if (e.target.value.trim().length > 0) {
+                    setPrompt(e.target.value.trim());
+                    if (inputRef.current) {
+                      inputRef.current.style.borderColor = "unset";
+                    }
+                  } else {
+                    if (inputRef.current) {
+                      inputRef.current.placeholder =
+                        "Your Prompt should not be empty";
+                      setPrompt("");
+                    }
+                  }
+                }}
+              />
+            </div>
+            <div className="p-1 width-10">
+                <button className="box-border bg-blue-500 rounded p-2 w-full"
+                onClick={async (e) => {
+                  e.preventDefault();
+                  sendPrompt(prompt);
+                }} type="button">
+                  Search
+                </button>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );
