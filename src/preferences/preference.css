@@ -1,0 +1,9 @@
+.width-25p {
+  width: 25%;
+  min-width: fit-content;
+}
+
+.preference-table input {
+  background-color: rgb(235, 235, 235);
+  padding-left: 5px;
+}
