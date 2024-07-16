@@ -1,77 +1,80 @@
 .icon {
-    height: 40px;
-    width: auto;
+  height: 40px;
+  width: auto;
 }
 
 .width-90 {
-    width: 90%;
+  width: 90%;
 }
 
 .height-footer-fields {
-    height: 40px;
+  height: 40px;
 }
 
 @keyframes dotAnimation {
-    0%, 20% {
-        content: ".";
-    }
-    40%, 60% {
-        content: "..";
-    }
-    80%, 100% {
-        content: "...";
-    }
+  0%,
+  20% {
+    content: ".";
+  }
+  40%,
+  60% {
+    content: "..";
+  }
+  80%,
+  100% {
+    content: "...";
+  }
 }
 
 .typing-indicator::after {
-    animation: dotAnimation 1.5s infinite;
+  animation: dotAnimation 1.5s infinite;
 }
 
 .theme-button {
-    background-color: white;
-    color: black;
+  background-color: white;
+  color: black;
 }
 
 .dark .theme-button {
-    background-color: black;
-    color: white;
+  background-color: black;
+  color: white;
 }
 
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 input[type="number"] {
-    -moz-appearance: textfield;
+  -moz-appearance: textfield;
 }
 
 body * {
-    @apply transition-colors duration-100;
+  @apply transition-colors duration-100;
 }
 
 .tooltip {
-    position: relative;
-    display: inline;
+  position: relative;
+  display: inline;
 }
 
 .tooltip .tooltiptext {
-    visibility: hidden;
-    width: 120px;
-    background-color: black;
-    color: white;
-    text-align: center;
-    padding: 5px 0;
-    border-radius: 6px;
-    position: absolute;
-    z-index: 1;
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
 }
 
 .tooltip:hover .tooltiptext {
-    visibility: visible;
+  visibility: visible;
 }
 
 .tooltiptext {
-    overflow: hidden;
+  overflow: hidden;
 }
