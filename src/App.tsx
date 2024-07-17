@@ -37,7 +37,7 @@ function createDialog(chatDetail: ChatDetails, index: number) {
 
 const WEB_SOCKET_URL: string = "ws://localhost:8000/ws/";
 
-function getSessionId() {
+export function getSessionId() {
   const newSessionId = uuidv4();
   return newSessionId.split("-").join("");
 }
@@ -67,8 +67,17 @@ const App = () => {
     (state) => state.preferenceReducer?.upper_chunk
   );
 
+  const previousSessionId = useTypedSelector(
+    (state) => state.appReducer?.previousSession || "init"
+  );
+
+  const currentSessionId = useTypedSelector(
+    (state) => state.appReducer?.currentSession || "init"
+  );
+
+  const chatStorage = useRef<Map<string, ChatDetails[]>>(new Map());
+
   const [prompt, setPrompt] = useState("");
-  const [sessionId, _setSessionId] = useState<string>(getSessionId());
   const [webSocket, setWebSocket] = useState<WebSocket | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [isSearching, setIsSearching] = useState<boolean>(false);
@@ -138,7 +147,7 @@ const App = () => {
   const createPrompt = (prompt: string) => {
     return JSON.stringify({
       table_name: currentTable,
-      session_id: sessionId,
+      session_id: currentSessionId,
       sentence: prompt,
       deployment_type: currentDeployment,
       deployment_model: currentModelName,
@@ -176,6 +185,18 @@ const App = () => {
       }
     }
   };
+
+  useEffect(() => {
+    if (chatdetails.length > 0) {
+      chatStorage.current.set(previousSessionId, chatdetails);
+    }
+    if (chatStorage.current.has(currentSessionId)) {
+      setChatDetails(chatStorage.current.get(currentSessionId) || []);
+    } else {
+      chatStorage.current.set(currentSessionId, []);
+      setChatDetails([]);
+    }
+  }, [currentSessionId]);
 
   useEffect(() => {
     inputRef.current?.focus();
