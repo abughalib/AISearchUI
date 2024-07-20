@@ -8,6 +8,7 @@ import { useTypedSelector } from "./hooks/use-typed-selector";
 import { ChatDialog } from "./chat/indvChat";
 import AppHeader from "./header/header";
 import "./App.css";
+import { AISEARCH_HOST, AISEARCH_PORT } from "./constants";
 
 function createDialog(chatDetail: ChatDetails, index: number) {
   const alignmentClass =
@@ -35,7 +36,7 @@ function createDialog(chatDetail: ChatDetails, index: number) {
   );
 }
 
-const WEB_SOCKET_URL: string = "ws://localhost:8000/ws/";
+const WEB_SOCKET_URL: string = `ws://${AISEARCH_HOST}:${AISEARCH_PORT}/ws/`;
 
 function getSessionId() {
   const newSessionId = uuidv4();

@@ -4,15 +4,16 @@ import { useTypedSelector } from "../hooks/use-typed-selector";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faDeleteLeft } from "@fortawesome/free-solid-svg-icons";
 import { deleteKnowledgeBase } from "../state/action-creators";
+import { AISEARCH_HOST, AISEARCH_PORT } from "../constants";
 
 interface Modalprops {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const SEARCH_BASES_URL = "https://localhost:8000/search_bases";
-const CREATE_KNOWLEDGE_BASE_URL = "https://localhost:8000/create_table";
-const DELETE_KNOWLEDGE_BASE_URL = "https://localhost:8000/delete_table";
+const SEARCH_BASES_URL = `http://${AISEARCH_HOST}:${AISEARCH_PORT}/search_bases`;
+const CREATE_KNOWLEDGE_BASE_URL = `http://${AISEARCH_HOST}:${AISEARCH_PORT}/create_table`;
+const DELETE_KNOWLEDGE_BASE_URL = `http://${AISEARCH_HOST}:${AISEARCH_PORT}/delete_table`;
 
 const DBWindow: React.FC<Modalprops> = ({ isOpen, onClose }) => {
   const currentTable = useTypedSelector(

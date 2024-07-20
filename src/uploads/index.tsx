@@ -1,12 +1,13 @@
 import React, { useState, useRef } from "react";
 import { useTypedSelector } from "../hooks/use-typed-selector";
+import { AISEARCH_HOST, AISEARCH_PORT } from "../constants";
 
 interface ModelProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const UPLOAD_URL = "http://localhost:8000/handle_upload";
+const UPLOAD_URL = `http://${AISEARCH_HOST}:${AISEARCH_PORT}/handle_upload`;
 
 const uploadFiles = async (
   files: FileList,
