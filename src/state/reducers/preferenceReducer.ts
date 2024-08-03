@@ -5,7 +5,7 @@ import { Preferences } from "../models";
 
 const initState: Preferences = {
     max_similar_search: 10,
-    min_similar_score: 60,
+    min_similar_score: 0.6,
     upper_chunk: 5,
     lower_chunk: 5,
     repeat_last_n: 64,

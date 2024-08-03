@@ -29,7 +29,7 @@ export const PreferencesWindow: React.FC<ModalProps> = ({
   );
 
   const min_similar_score = useTypedSelector(
-    (state) => state.preferenceReducer?.min_similar_score,
+    (state) => state.preferenceReducer?.min_similar_score || 0.6,
   );
 
   const upper_chunk = useTypedSelector(
@@ -113,12 +113,12 @@ export const PreferencesWindow: React.FC<ModalProps> = ({
               Min Similarity Score: {" "}
               <input
                 className="rounded outline-0 dark:bg-gray-700 dark:text-white"
-                value={min_similar_score}
+                value={`${min_similar_score * 100}%`}
                 type="number"
                 onChange={(e) => {
-                  changeMinSimilarScore(Math.round(+e.target.value) || 60);
+                  changeMinSimilarScore(+(+e.target.value).toFixed(2) || 0.6);
                 }}
-                pattern="\d+"
+                pattern="\.\d{0,2}"
               />
             </label>
             <label className="flex justify-between flex-row">
