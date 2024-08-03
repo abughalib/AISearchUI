@@ -103,6 +103,8 @@ export const PreferencesWindow: React.FC<ModalProps> = ({
                 className="rounded outline-0 dark:bg-gray-700 dark:text-white"
                 value={max_similar_search}
                 type="number"
+                min={1}
+                step={1}
                 onChange={(e) => {
                   changeMaxSimilarSearch(Math.round(+e.target.value) || 3);
                 }}
@@ -113,9 +115,13 @@ export const PreferencesWindow: React.FC<ModalProps> = ({
               Min Similarity Score: {" "}
               <input
                 className="rounded outline-0 dark:bg-gray-700 dark:text-white"
-                value={`${min_similar_score * 100}%`}
+                value={min_similar_score}
                 type="number"
+                min={0.0}
+                max={1.0}
+                step={0.01}
                 onChange={(e) => {
+                  console.log(+e.target.value)
                   changeMinSimilarScore(+(+e.target.value).toFixed(2) || 0.6);
                 }}
                 pattern="\.\d{0,2}"
@@ -126,6 +132,8 @@ export const PreferencesWindow: React.FC<ModalProps> = ({
               <input
                 className="rounded outline-0 dark:bg-gray-700 dark:text-white"
                 value={upper_chunk}
+                min={0}
+                step={1}
                 type="number"
                 onChange={(e) => {
                   changeUpperChunk(Math.round(+e.target.value) || 0);
@@ -138,6 +146,8 @@ export const PreferencesWindow: React.FC<ModalProps> = ({
               <input
                 className="rounded outline-0 dark:bg-gray-700 dark:text-white"
                 value={lower_chunk}
+                min={0}
+                step={1}
                 type="number"
                 onChange={(e) => {
                   changeLowerChunk(Math.round(+e.target.value) || 0);
@@ -151,6 +161,9 @@ export const PreferencesWindow: React.FC<ModalProps> = ({
                 className="rounded outline-0 dark:bg-gray-700 dark:text-white"
                 value={temperature}
                 type="number"
+                min={0}
+                step={0.1}
+                max={1}
                 onChange={(e) => {
                   changeInferenceTemperature(Math.round(+e.target.value) || 0);
                 }}
@@ -163,6 +176,8 @@ export const PreferencesWindow: React.FC<ModalProps> = ({
                 className="rounded outline-0 dark:bg-gray-700 dark:text-white"
                 value={seed}
                 type="number"
+                min={12345}
+                max={655000}
                 onChange={(e) => {
                   changeInferenceSeed(Math.round(+e.target.value) || 0);
                 }}
@@ -175,6 +190,9 @@ export const PreferencesWindow: React.FC<ModalProps> = ({
                 className="rounded outline-0 dark:bg-gray-700 dark:text-white"
                 value={top_p}
                 type="number"
+                min={0}
+                step={0.1}
+                max={1}
                 onChange={(e) => {
                   changeInferenceTopP(Math.round(+e.target.value) || 0);
                 }}
@@ -187,6 +205,9 @@ export const PreferencesWindow: React.FC<ModalProps> = ({
                 className="rounded outline-0 dark:bg-gray-700 dark:text-white"
                 value={repeat_penalty}
                 type="number"
+                min={0}
+                step={0.1}
+                max={10}
                 onChange={(e) => {
                   changeRepeatPenalty(Math.round(+e.target.value) || 0);
                 }}
@@ -199,6 +220,9 @@ export const PreferencesWindow: React.FC<ModalProps> = ({
                 className="rounded outline-0 dark:bg-gray-700 dark:text-white"
                 value={repeat_last_n}
                 type="number"
+                min={0}
+                step={1}
+                max={100}
                 onChange={(e) => {
                   changeRepeatLastN(Math.round(+e.target.value) || 0);
                 }}
