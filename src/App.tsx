@@ -23,11 +23,10 @@ function createDialog(chatDetail: ChatDetails, index: number) {
     <div key={index} className={`flex ${alignmentClass} my-2`}>
       <div className={`${widthClass} rounded box-border`}>
         <div
-          className={`shadow-2xl shadow-indigo-500/40 box-border overflow-auto p-2 rounded m-1 whitespace-pre-line ${
-            chatDetail.user == "AI"
-              ? "bg-green-400 dark:bg-green-800"
-              : "bg-blue-300 dark:bg-blue-800"
-          } ${floatBox}`}
+          className={`shadow-2xl shadow-indigo-500/40 box-border overflow-auto p-2 rounded m-1 whitespace-pre-line ${chatDetail.user == "AI"
+            ? "bg-green-400 dark:bg-green-800"
+            : "bg-blue-300 dark:bg-blue-800"
+            } ${floatBox}`}
         >
           <ChatDialog {...chatDetail} />
         </div>
@@ -59,6 +58,10 @@ const App = () => {
   const maxSimilarSearch = useTypedSelector(
     (state) => state.preferenceReducer?.max_similar_search
   );
+
+  const minimum_score = useTypedSelector(
+    (state) => state.preferenceReducer?.min_similar_score
+  )
 
   const lowerChunk = useTypedSelector(
     (state) => state.preferenceReducer?.lower_chunk
@@ -146,6 +149,7 @@ const App = () => {
       max_similar_search: maxSimilarSearch,
       lower_chunk: lowerChunk,
       upper_chunk: upperChunk,
+      minimum_score: minimum_score
     });
   };
 
@@ -230,11 +234,10 @@ const App = () => {
   return (
     <>
       <div
-        className={`flex flex-col h-screen px-2 ${
-          localStorage.getItem("theme") === "dark"
-            ? "dark:bg-black dark:text-white"
-            : ""
-        }`}
+        className={`flex flex-col h-screen px-2 ${localStorage.getItem("theme") === "dark"
+          ? "dark:bg-black dark:text-white"
+          : ""
+          }`}
       >
         <div className="h-16 flex-shrink-0 content-center">
           <AppHeader />

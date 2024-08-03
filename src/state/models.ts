@@ -1,5 +1,6 @@
 export interface Preferences {
   max_similar_search: number;
+  min_similar_score: number;
   upper_chunk: number;
   lower_chunk: number;
   repeat_last_n: number;

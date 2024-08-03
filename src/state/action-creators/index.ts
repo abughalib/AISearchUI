@@ -12,7 +12,8 @@ import {
     ChangeInferenceSeed,
     ChangeInferenceTopP,
     ChangeRepeatPenalty,
-    ChangeRepeatLastN
+    ChangeRepeatLastN,
+    ChangeMinSimilarScore
 } from "../actions";
 import { Deployments } from "../reducers/infModelReducer";
 
@@ -52,6 +53,13 @@ export const changeMaxSimilarSearch = (max_similar_search: number): ChangeMaxSim
         max_similar_search
     }
 });
+
+export const changeMinSimilarScore = (min_similar_score: number): ChangeMinSimilarScore => ({
+    type: ActionType.MIN_SIMILAR_SCORE,
+    payload: {
+        min_similar_score
+    }
+})
 
 export const changeUpperChunk = (upper_chunk: number): ChangeUpperChunk => ({
     type: ActionType.UPPER_CHUNK,

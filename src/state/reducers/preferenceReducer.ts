@@ -5,6 +5,7 @@ import { Preferences } from "../models";
 
 const initState: Preferences = {
     max_similar_search: 10,
+    min_similar_score: 60,
     upper_chunk: 5,
     lower_chunk: 5,
     repeat_last_n: 64,
@@ -40,6 +41,9 @@ const preferenceReducer = produce(
                 return state
             case ActionType.INFERENCING_TEMPERATURE:
                 state.inference_temperature = action.payload.inference_temperature
+                return state
+            case ActionType.MIN_SIMILAR_SCORE:
+                state.min_similar_score = action.payload.min_similar_score
                 return state
             default:
                 return state

@@ -4,6 +4,7 @@ export enum ActionType {
     CHANGE_KNOWLEDGE_BASE = "change_knowledge_base",
     CHANGE_INF_MODEL = "change_inf_model",
     MAX_SIMILAR_SEARCH = "max_similar_search",
+    MIN_SIMILAR_SCORE = "min_similar_score",
     UPPER_CHUNK = "upper_chunk",
     LOWER_CHUNK = "lower_chunk",
     INFERENCING_TEMPERATURE = "inference_temperature",

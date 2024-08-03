@@ -37,6 +37,13 @@ export interface ChangeMaxSimilarSearch {
     };
 }
 
+export interface ChangeMinSimilarScore {
+    type: ActionType.MIN_SIMILAR_SCORE;
+    payload: {
+        min_similar_score: number
+    };
+}
+
 export interface ChangeUpperChunk {
     type: ActionType.UPPER_CHUNK;
     payload: {
@@ -99,4 +106,5 @@ export type Action =
     | ChangeInferenceSeed
     | ChangeInferenceTopP
     | ChangeRepeatPenalty
-    | ChangeRepeatLastN;
+    | ChangeRepeatLastN
+    | ChangeMinSimilarScore;

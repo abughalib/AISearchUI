@@ -1,7 +1,6 @@
 import { useRef } from "react";
 import { useTypedSelector } from "../hooks/use-typed-selector";
 import { useActions } from "../hooks/use-actions";
-import { changeInferenceTopP } from "../state/action-creators";
 import "./preference.css";
 
 interface ModalProps {
@@ -27,6 +26,10 @@ export const PreferencesWindow: React.FC<ModalProps> = ({
 
   const max_similar_search = useTypedSelector(
     (state) => state.preferenceReducer?.max_similar_search,
+  );
+
+  const min_similar_score = useTypedSelector(
+    (state) => state.preferenceReducer?.min_similar_score,
   );
 
   const upper_chunk = useTypedSelector(
@@ -59,12 +62,14 @@ export const PreferencesWindow: React.FC<ModalProps> = ({
 
   const {
     changeMaxSimilarSearch,
+    changeMinSimilarScore,
     changeInferenceTemperature,
     changeInferenceSeed,
     changeUpperChunk,
     changeLowerChunk,
     changeRepeatLastN,
     changeRepeatPenalty,
+    changeInferenceTopP,
   } = useActions();
 
   const handleSave = () => {
@@ -93,13 +98,25 @@ export const PreferencesWindow: React.FC<ModalProps> = ({
               />
             </label>
             <label className="flex justify-between flex-row">
-              Max Similar Search:{" "}
+              Max No. Similar Search:{" "}
               <input
                 className="rounded outline-0 dark:bg-gray-700 dark:text-white"
                 value={max_similar_search}
                 type="number"
                 onChange={(e) => {
                   changeMaxSimilarSearch(Math.round(+e.target.value) || 3);
+                }}
+                pattern="\d+"
+              />
+            </label>
+            <label className="flex justify-between flex-row">
+              Min Similarity Score: {" "}
+              <input
+                className="rounded outline-0 dark:bg-gray-700 dark:text-white"
+                value={min_similar_score}
+                type="number"
+                onChange={(e) => {
+                  changeMinSimilarScore(Math.round(+e.target.value) || 60);
                 }}
                 pattern="\d+"
               />
