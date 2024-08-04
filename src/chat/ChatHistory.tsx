@@ -43,7 +43,7 @@ const chatHistory: React.FC<ChatWindowProps> = ({
   return (
     <div
       ref={historyRef}
-      className="fixed top-0 left-0 h-full w-64 bg-gray-800 text-white overflow-auto"
+      className="fixed top-0 left-0 h-full w-64 bg-zinc-50 dark:bg-gray-800 dark:text-white overflow-auto"
     >
       <button
         className="absolute top-0 right-0 m-2"
