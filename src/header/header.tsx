@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ExtensionWindow from "../extensions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DBWindow from "../database";
@@ -19,6 +19,11 @@ import {
 import ChatHistory from "../chat/ChatHistory";
 import PreferencesWindow from "../preferences";
 
+export interface ChatList {
+  id: string;
+  title: string;
+}
+
 const AppHeader = () => {
   const availableModels: InferencingModel[] = [
     { deployment: Deployments.LOCAL, model_name: "PHI-2" },
@@ -28,7 +33,7 @@ const AppHeader = () => {
   ];
 
   const currentTable = useTypedSelector(
-    (state) => state.knowledgeReducer?.table_name || "",
+    (state) => state.knowledgeReducer?.table_name || ""
   );
 
   const { changeInfModel } = useActions();
@@ -47,12 +52,16 @@ const AppHeader = () => {
 
   const selectedDeployment = useTypedSelector(
     (state) =>
-      state.infModelReducer?.deployment || availableModels[0].deployment || "",
+      state.infModelReducer?.deployment || availableModels[0].deployment || ""
   );
 
   const selectedModel = useTypedSelector(
     (state) =>
-      state.infModelReducer?.model_name || availableModels[0].model_name || "",
+      state.infModelReducer?.model_name || availableModels[0].model_name || ""
+  );
+
+  const currentSessionId = useTypedSelector(
+    (state) => state.appReducer?.currentSession || "init"
   );
 
   // Manage state of Modals
@@ -60,6 +69,17 @@ const AppHeader = () => {
   const [isDBOpen, setIsDBOpen] = useState(false);
   const [isChatHistoryOpen, setIsChatHistoryOpen] = useState(false);
   const [isPreferenceOpen, setIsPreferenceOpen] = useState(false);
+  const [chatLists, setChatLists] = useState<ChatList[]>([]);
+
+  useEffect(() => {
+    setChatLists([
+      ...chatLists,
+      {
+        id: currentSessionId,
+        title: `Chat ${currentSessionId}`
+      }
+    ])
+  }, []);
 
   return (
     <div className="flex h-15 p-1">
@@ -71,6 +91,8 @@ const AppHeader = () => {
           {isChatHistoryOpen && (
             <ChatHistory
               isOpen={isChatHistoryOpen}
+              chatLists={chatLists}
+              setChatLists={setChatLists}
               onClose={() => {
                 setIsChatHistoryOpen(false);
               }}

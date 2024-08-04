@@ -13,7 +13,9 @@ import {
     ChangeInferenceTopP,
     ChangeRepeatPenalty,
     ChangeRepeatLastN,
-    ChangeMinSimilarScore
+    ChangeMinSimilarScore,
+    SetSearching,
+    SetSession
 } from "../actions";
 import { Deployments } from "../reducers/infModelReducer";
 
@@ -110,4 +112,16 @@ export const changeRepeatLastN = (repeat_last_n: number): ChangeRepeatLastN => (
     }
 });
 
+export const setSession = (session: string): SetSession => ({
+  type: ActionType.SET_SESSION,
+  payload: {
+    session_id: session,
+  },
+});
 
+export const setSearching = (isSearching: boolean): SetSearching => ({
+  type: ActionType.SET_SEARCHING,
+  payload: {
+    isSearching,
+  },
+});

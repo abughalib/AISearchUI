@@ -93,6 +93,34 @@ export interface ChangeRepeatLastN {
     };
 }
 
+export interface SetSession {
+  type: ActionType.SET_SESSION;
+  payload: {
+    session_id: string;
+  };
+}
+
+export interface SetSearching {
+  type: ActionType.SET_SEARCHING;
+  payload: {
+    isSearching: boolean;
+  };
+}
+
+export interface SetSession {
+  type: ActionType.SET_SESSION;
+  payload: {
+    session_id: string;
+  };
+}
+
+export interface SetSearching {
+  type: ActionType.SET_SEARCHING;
+  payload: {
+    isSearching: boolean;
+  };
+}
+
 
 export type Action =
     | CreateKnowledgeBase
@@ -106,5 +134,7 @@ export type Action =
     | ChangeInferenceSeed
     | ChangeInferenceTopP
     | ChangeRepeatPenalty
-    | ChangeRepeatLastN
-    | ChangeMinSimilarScore;
+    | ChangeRepeatLastN 
+    | ChangeMinSimilarScore
+    | SetSession
+    | SetSearching;
