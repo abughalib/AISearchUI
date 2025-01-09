@@ -23,8 +23,8 @@ export function get_current_button_class() {
 
 export function get_current_icon_class() {
   return localStorage.getItem("theme") == "dark"
-    ? "dark:bg-transparent dark:text-white transition hover:dark:text-grey-50"
-    : "unset bg-black";
+    ? "outline-0 border-0 dark:bg-transparent dark:text-white transition hover:dark:text-grey-50"
+    : "outline-0 border-0 unset bg-black";
 }
 
 const WEB_SOCKET_URL: string = `ws://${AISEARCH_HOST}:${AISEARCH_PORT}/ws/`;
