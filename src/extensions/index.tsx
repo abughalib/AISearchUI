@@ -18,14 +18,14 @@ const ExtensionWindow: React.FC<ModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <div
-      className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
+      className="fixed inset-0 bg-neutral-600 bg-opacity-50 overflow-y-auto h-full w-full"
       id="upload_modal"
       ref={modalRef}
       onClick={closeModal}
     >
       <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-black dark:text-white">
         <div className="mt-3 text-center">
-          <h3 className="text-lg leading-6 font-medium">Extensions</h3>
+          <h3 className="text-2xl leading-6 font-medium">Extensions</h3>
           <div className="mt-2 px-7 py-3">
             <div className="my-1 flex justify-start">
               <ul>
@@ -41,7 +41,11 @@ const ExtensionWindow: React.FC<ModalProps> = ({ isOpen, onClose }) => {
           <div className="items-center px-4 py-3">
             <button
               id="upload_button"
-              className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`${
+                localStorage.getItem("theme") === "dark"
+                  ? "border-solid bg-neutral-800 text-white"
+                  : "bg-neutral-100 text-black"
+              } box-border rounded p-2 w-full`}
               onClick={onClose}
             >
               Select

@@ -18,6 +18,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import ChatHistory from "../chat/ChatHistory";
 import PreferencesWindow from "../preferences";
+import { faSquareFull } from "@fortawesome/free-solid-svg-icons/faSquareFull";
+import { get_current_icon_class } from "../App";
 
 export interface ChatList {
   id: string;
@@ -26,14 +28,34 @@ export interface ChatList {
 
 const AppHeader = () => {
   const availableModels: InferencingModel[] = [
-    { deployment: Deployments.LOCAL, model_name: "PHI-2" },
-    { deployment: Deployments.LOCAL, model_name: "PHI-3" },
-    { deployment: Deployments.AZURE, model_name: "GPT-3.5T" },
-    { deployment: Deployments.AZURE, model_name: "GPT-4o" },
+    {
+      deployment: Deployments.LOCAL,
+      model_name: "PHI-2",
+      model_type: Deployments.SLM,
+    },
+    {
+      deployment: Deployments.LOCAL,
+      model_name: "PHI-3",
+      model_type: Deployments.SLM,
+    },
+    {
+      deployment: Deployments.AZURE,
+      model_name: "GPT-3.5T",
+      model_type: Deployments.LLM,
+    },
+    {
+      deployment: Deployments.AZURE,
+      model_name: "GPT-4o",
+      model_type: Deployments.LLM,
+    },
   ];
 
   const currentTable = useTypedSelector(
     (state) => state.knowledgeReducer?.table_name || ""
+  );
+
+  const session_id = useTypedSelector(
+    (state) => state.appReducer?.currentSession || ""
   );
 
   const { changeInfModel } = useActions();
@@ -44,9 +66,13 @@ const AppHeader = () => {
     const model_name = model_param.split("/")[1];
 
     if (deployment === Deployments.LOCAL) {
-      changeInfModel(Deployments.LOCAL, model_name);
+      changeInfModel(Deployments.LOCAL, model_name, Deployments.SLM);
     } else {
-      changeInfModel(Deployments.AZURE, model_name);
+      if (model_name === "GPT-4o") {
+        changeInfModel(Deployments.AZURE, model_name, Deployments.LLM);
+      } else {
+        changeInfModel(Deployments.AZURE, model_name, Deployments.SLM);
+      }
     }
   };
 
@@ -76,16 +102,28 @@ const AppHeader = () => {
       ...chatLists,
       {
         id: currentSessionId,
-        title: `Chat ${currentSessionId}`
-      }
-    ])
+        title: `Chat ${currentSessionId}`,
+      },
+    ]);
   }, []);
 
   return (
     <div className="flex h-15 p-1">
       <div className="p-1 vertical-center icon">
-        <a onClick={() => setIsChatHistoryOpen(!isChatHistoryOpen)}>
-          <FontAwesomeIcon icon={faClockRotateLeft} size="2x"></FontAwesomeIcon>
+        <a
+          className="icon-header"
+          onClick={() => setIsChatHistoryOpen(!isChatHistoryOpen)}
+        >
+          <FontAwesomeIcon
+            icon={faClockRotateLeft}
+            size="2x"
+            className={`${get_current_icon_class()}`}
+            mask={
+              localStorage.getItem("theme") === "dark"
+                ? undefined
+                : faSquareFull
+            }
+          />
         </a>
         <div>
           {isChatHistoryOpen && (
@@ -102,7 +140,7 @@ const AppHeader = () => {
       </div>
       <div className="vertical-center">
         <select
-          className="outline-0 p-1 vertical-center dark:bg-black"
+          className="outline-0 p-1 vertical-center bg-neutral-100 dark:bg-black"
           onChange={(e) => setInferencingModel(e.target.value)}
           defaultValue={`${selectedDeployment}/${selectedModel}`}
         >
@@ -117,8 +155,17 @@ const AppHeader = () => {
       </div>
       <div className="flex flex-row vertical-center">
         <div className="p-1 icon tooltip">
-          <a className="text-sky-600" onClick={() => setIsDBOpen(true)}>
-            <FontAwesomeIcon icon={faDatabase} size="2x" />
+          <a className="icon-header" onClick={() => setIsDBOpen(true)}>
+            <FontAwesomeIcon
+              icon={faDatabase}
+              size="2x"
+              className={`${get_current_icon_class()}`}
+              mask={
+                localStorage.getItem("theme") === "dark"
+                  ? undefined
+                  : faSquareFull
+              }
+            />
           </a>
           <p className="tooltiptext">Selected: {currentTable}</p>
         </div>
@@ -132,13 +179,22 @@ const AppHeader = () => {
           onClose={() => setIsPreferenceOpen(false)}
         />
         <div className="p-1 icon">
-          <a className="text-sky-600" onClick={() => setIsExtensionOpen(true)}>
-            <FontAwesomeIcon icon={faPuzzlePiece} size="2x" />
+          <a className="icon-header" onClick={() => setIsExtensionOpen(true)}>
+            <FontAwesomeIcon
+              icon={faPuzzlePiece}
+              size="2x"
+              className={`${get_current_icon_class()}`}
+              mask={
+                localStorage.getItem("theme") === "dark"
+                  ? undefined
+                  : faSquareFull
+              }
+            />
           </a>
         </div>
         <div id="dark_mode" className="p-1 icon">
           <a
-            className="dark:text-white"
+            className="icon-header"
             onClick={() => {
               document.documentElement.classList.toggle("dark");
               if (localStorage.getItem("theme") === "dark") {
@@ -148,12 +204,30 @@ const AppHeader = () => {
               }
             }}
           >
-            <FontAwesomeIcon icon={faMoon} size="2x" />
+            <FontAwesomeIcon
+              icon={faMoon}
+              size="2x"
+              className={`${get_current_icon_class()}`}
+              mask={
+                localStorage.getItem("theme") === "dark"
+                  ? undefined
+                  : faSquareFull
+              }
+            />
           </a>
         </div>
         <div className="p-1 icon">
-          <a className="text-sky-600" onClick={() => setIsPreferenceOpen(true)}>
-            <FontAwesomeIcon icon={faGear} size="2x" />
+          <a className="icon-header" onClick={() => setIsPreferenceOpen(true)}>
+            <FontAwesomeIcon
+              icon={faGear}
+              size="2x"
+              className={`${get_current_icon_class()}`}
+              mask={
+                localStorage.getItem("theme") === "dark"
+                  ? undefined
+                  : faSquareFull
+              }
+            />
           </a>
         </div>
       </div>

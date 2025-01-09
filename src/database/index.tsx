@@ -2,9 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useActions } from "../hooks/use-actions";
 import { useTypedSelector } from "../hooks/use-typed-selector";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faDeleteLeft } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPlus,
+  faDeleteLeft,
+  faSquareFull,
+} from "@fortawesome/free-solid-svg-icons";
 import { deleteKnowledgeBase } from "../state/action-creators";
 import { AISEARCH_HOST, AISEARCH_PORT } from "../constants";
+import { get_current_icon_class } from "../App";
 
 interface Modalprops {
   isOpen: boolean;
@@ -17,7 +22,7 @@ const DELETE_KNOWLEDGE_BASE_URL = `http://${AISEARCH_HOST}:${AISEARCH_PORT}/dele
 
 const DBWindow: React.FC<Modalprops> = ({ isOpen, onClose }) => {
   const currentTable = useTypedSelector(
-    (state) => state.knowledgeReducer?.table_name,
+    (state) => state.knowledgeReducer?.table_name
   );
 
   const { changeKnowledgeBase, createKnowledgeBase } = useActions();
@@ -99,14 +104,14 @@ const DBWindow: React.FC<Modalprops> = ({ isOpen, onClose }) => {
 
   return (
     <div
-      className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
+      className="fixed inset-0 bg-neutral-600 bg-opacity-50 overflow-y-auto h-full w-full"
       id="upload_modal"
       ref={modalRef}
       onClick={closeModal}
     >
-      <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-black dark:text-white">
+      <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-neutral-100 dark:bg-black dark:text-neutral-300">
         <div className="mt-3 text-center">
-          <h3 className="text-lg leading-6 font-medium">
+          <h3 className="text-2xl leading-6 font-medium">
             Select The Knowledge Base
           </h3>
           <div className="mt-2 px-7 py-3">
@@ -132,7 +137,15 @@ const DBWindow: React.FC<Modalprops> = ({ isOpen, onClose }) => {
                           deleteKnowledgeBaseRequest(val);
                         }}
                       >
-                        <FontAwesomeIcon icon={faDeleteLeft} />
+                        <FontAwesomeIcon
+                          icon={faDeleteLeft}
+                          className={`${get_current_icon_class()}`}
+                          mask={
+                            localStorage.getItem("theme") === "dark"
+                              ? undefined
+                              : faSquareFull
+                          }
+                        />
                       </button>
                     </li>
                   );
@@ -169,7 +182,15 @@ const DBWindow: React.FC<Modalprops> = ({ isOpen, onClose }) => {
                         }
                       }}
                     >
-                      <FontAwesomeIcon icon={faPlus} />
+                      <FontAwesomeIcon
+                        icon={faPlus}
+                        className={`${get_current_icon_class()}`}
+                        mask={
+                          localStorage.getItem("theme") === "dark"
+                            ? undefined
+                            : faSquareFull
+                        }
+                      />
                     </button>
                   </label>
                 </li>
@@ -179,7 +200,11 @@ const DBWindow: React.FC<Modalprops> = ({ isOpen, onClose }) => {
           <div className="items-center px-4 py-3">
             <button
               id="upload_button"
-              className="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`${
+                localStorage.getItem("theme") === "dark"
+                  ? "border-solid bg-neutral-800 text-white"
+                  : "bg-neutral-100 text-black"
+              } box-border rounded p-2 w-full`}
               onClick={onClose}
             >
               Select

@@ -8,4 +8,5 @@ export interface Preferences {
   inference_seed: number;
   inference_top_p: number;
   inference_temperature: number;
+  system_message: string;
 }

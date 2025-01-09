@@ -3,36 +3,28 @@ import { v4 as uuidv4 } from "uuid";
 import { ChatDetails } from "./chat/chatType";
 import UploadWindow from "./uploads";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileImport } from "@fortawesome/free-solid-svg-icons";
+import {
+  faFileImport,
+  faSquareFull,
+  faStop,
+  faVolumeHigh,
+} from "@fortawesome/free-solid-svg-icons";
 import { useTypedSelector } from "./hooks/use-typed-selector";
 import { ChatDialog } from "./chat/indvChat";
 import AppHeader from "./header/header";
 import "./App.css";
 import { AISEARCH_HOST, AISEARCH_PORT } from "./constants";
+import { Rating } from "./chat/Rating";
+import { faMicrophone } from "@fortawesome/free-solid-svg-icons/faMicrophone";
 
-function createDialog(chatDetail: ChatDetails, index: number) {
-  const alignmentClass =
-    chatDetail.user === "AI" ? "justify-start" : "justify-end";
-  const floatBox =
-    chatDetail.user === "AI"
-      ? "float-left clear-left"
-      : "float-right clear-right";
+export function get_current_button_class() {
+  return localStorage.getItem("theme") === "dark" ? "dark" : "light";
+}
 
-  const widthClass = "w-4/5";
-  return (
-    <div key={index} className={`flex ${alignmentClass} my-2`}>
-      <div className={`${widthClass} rounded box-border`}>
-        <div
-          className={`shadow-2xl shadow-indigo-500/40 box-border overflow-auto p-2 rounded m-1 whitespace-pre-line ${chatDetail.user == "AI"
-            ? "bg-green-400 dark:bg-green-800"
-            : "bg-blue-300 dark:bg-blue-800"
-            } ${floatBox}`}
-        >
-          <ChatDialog {...chatDetail} />
-        </div>
-      </div>
-    </div>
-  );
+export function get_current_icon_class() {
+  return localStorage.getItem("theme") == "dark"
+    ? "dark:bg-transparent dark:text-white transition hover:dark:text-grey-50"
+    : "unset bg-black";
 }
 
 const WEB_SOCKET_URL: string = `ws://${AISEARCH_HOST}:${AISEARCH_PORT}/ws/`;
@@ -61,7 +53,7 @@ const App = () => {
 
   const minimum_score = useTypedSelector(
     (state) => state.preferenceReducer?.min_similar_score
-  )
+  );
 
   const lowerChunk = useTypedSelector(
     (state) => state.preferenceReducer?.lower_chunk
@@ -79,6 +71,10 @@ const App = () => {
     (state) => state.appReducer?.currentSession || "init"
   );
 
+  const system_message = useTypedSelector(
+    (state) => state?.preferenceReducer?.system_message
+  );
+
   const chatStorage = useRef<Map<string, ChatDetails[]>>(new Map());
 
   const [prompt, setPrompt] = useState("");
@@ -86,6 +82,11 @@ const App = () => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
+  const [isRated, setIsRated] = useState<boolean>(false);
+  const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
+  const [_currentrating, setCurrentRating] = useState<number>(0);
+  const [isListening, setIsListening] = useState<boolean>(false);
   const [chatdetails, setChatDetails] = useState<ChatDetails[]>([
     {
       user: "AI",
@@ -95,6 +96,158 @@ const App = () => {
 
   const inputRef = useRef<HTMLInputElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
+  const recognitionRef = useRef<any>(null);
+
+  const getAriaVoice = () => {
+    if (
+      window.speechSynthesis
+        .getVoices()
+        .filter(
+          (voice) =>
+            voice.name ===
+            "Microsoft Aria Online (Natural) - English (United States)"
+        ).length !== 0
+    ) {
+      const voice = window.speechSynthesis;
+      return voice
+        .getVoices()
+        .filter(
+          (voice) =>
+            voice.name ===
+            "Microsoft Aria Online (Natural) - English (United States)"
+        )[0];
+    }
+    return null;
+  };
+
+  const TextToSpeech = (
+    text: string,
+    isSpeaking: boolean,
+    setIsSpeaking: (value: boolean) => void
+  ) => {
+    if (isSpeaking) {
+      speechSynthesis.cancel();
+      setIsSpeaking(false);
+    } else {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.voice = getAriaVoice();
+      speechSynthesis.speak(utterance);
+      setIsSpeaking(true);
+    }
+  };
+
+  const handleSpeechToText = () => {
+    setIsListening(true);
+    setPrompt("Listening...");
+
+    if (isListening) {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+      setIsListening(false);
+      setPrompt((prevPrompt) => prevPrompt || "Listening Stopped...");
+    } else {
+      const recognitation = new ((window as any).SpeechRecognition ||
+        (window as any).webkitSpeechRecognition)();
+      recognitation.lang = "en-US";
+      recognitation.interResults = false;
+      recognitation.maxAlternatives = 1;
+
+      recognitation.onresult = (event: any) => {
+        const speechresult = event.results[0][0].transcript;
+        setPrompt(speechresult);
+        if (inputRef.current) {
+          inputRef.current.value = speechresult;
+        }
+      };
+
+      recognitation.onerror = (event: any) => {
+        console.error("Speech recognition error: ", event.error);
+      };
+
+      recognitation.onspeechend = () => {
+        recognitation.stop();
+      };
+
+      recognitionRef.current = recognitation;
+      recognitation.start();
+    }
+  };
+
+  const createDialog = (chatDetail: ChatDetails, index: number) => {
+    const alignmentClass =
+      chatDetail.user === "AI" ? "justify-start" : "justify-end";
+    const floatBox =
+      chatDetail.user === "AI"
+        ? "float-left clear-left"
+        : "float-right clear-right";
+
+    const handleRating = (rating: number) => {
+      if (rating <= 2) {
+        setIsSearching(true);
+        updateChatDetails({
+          text: "\n",
+          user: "AI",
+        });
+        webSocket?.send(
+          createPrompt("Try Again, The Response Seems incorrect.")
+        );
+        setCurrentRating(0);
+        setIsRated(false);
+      } else {
+        setIsSearching(false);
+        setIsRated(true);
+      }
+    };
+
+    const widthClass = "w-4/5";
+    return (
+      <div
+        key={index}
+        className="flex flex-col"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <div key={index} className={`flex ${alignmentClass} my-2`}>
+          <div className={`${widthClass} rounded box-border`}>
+            <div
+              className={`overflow-auto p-2 rounded m-1 whitespace-pre-line ${
+                chatDetail.user == "AI"
+                  ? "bg-transparent dark:bg-transparent"
+                  : "bg-neutral-300 dark:bg-neutral-800"
+              } ${floatBox}`}
+            >
+              <ChatDialog {...chatDetail} />
+            </div>
+          </div>
+        </div>
+        {chatDetail.user === "AI" && (
+          <div className="flex flex-row justify-between mx-14">
+            <div>
+              {(isHovered || isRated) && index !== 0 && (
+                <Rating onRate={handleRating} />
+              )}
+            </div>
+            <a href="#" className="icon icon-body">
+              <FontAwesomeIcon
+                icon={isSpeaking ? faStop : faVolumeHigh}
+                size={"2x"}
+                onClick={() =>
+                  TextToSpeech(chatDetail.text, isSpeaking, setIsSpeaking)
+                }
+                className={`${get_current_icon_class()}`}
+                mask={
+                  localStorage.getItem("theme") === "dark"
+                    ? undefined
+                    : faSquareFull
+                }
+              />
+            </a>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   const updateChatDetails = (newChatDetail: ChatDetails) => {
     setChatDetails((prevChatDetails) => {
@@ -152,13 +305,14 @@ const App = () => {
     return JSON.stringify({
       table_name: currentTable,
       session_id: currentSessionId,
+      system_message: system_message,
       sentence: prompt,
       deployment_type: currentDeployment,
       deployment_model: currentModelName,
       max_similar_search: maxSimilarSearch,
       lower_chunk: lowerChunk,
       upper_chunk: upperChunk,
-      minimum_score: minimum_score
+      minimum_score: minimum_score,
     });
   };
 
@@ -255,17 +409,18 @@ const App = () => {
   return (
     <>
       <div
-        className={`flex flex-col h-screen px-2 ${localStorage.getItem("theme") === "dark"
-          ? "dark:bg-black dark:text-white"
-          : ""
-          }`}
+        className={`flex flex-col h-screen px-2 ${
+          localStorage.getItem("theme") === "dark"
+            ? "dark:bg-black dark:text-neutral-300"
+            : "light-bg"
+        } main-container`}
       >
-        <div className="h-16 flex-shrink-0 content-center">
+        <div className="h-16 flex-shrink-0 content-center header">
           <AppHeader />
         </div>
         <div
           ref={chatWindowRef}
-          className="flex-grow space-y-4 overflow-auto bg-blue-100 p-3 dark:bg-gray-900"
+          className="flex-grow space-y-4 overflow-auto bg-gray-50 p-3 dark:bg-neutral-900 main-content"
         >
           {chatdetails.map((chatDetail, index) => {
             return createDialog(chatDetail, index);
@@ -273,7 +428,7 @@ const App = () => {
           {isSearching && (
             <div className="flex justify-start my-2">
               <div className="w-4/5 rounded box-border">
-                <div className="shadow-2xl shadow-indigo-500/40 box-border overflow-auto p-2 rounded m-1 whitespace-pre-line bg-green-800 float-left clear-left">
+                <div className="p-2 rounded m-1 whitespace-pre-line float-left clear-left">
                   <div className="typing-indicator">Searching Data</div>
                 </div>
               </div>
@@ -284,55 +439,102 @@ const App = () => {
           isOpen={isModalOpen}
           onClose={() => setModalOpen(false)}
         />
-        <div className="flex items-center h-16 flex-shrink-0 content-center">
+        <div className="h-18 flex-shrink-0 content-center footer">
           <div className="flex flex-row justify-evenly h-15 content-center m-auto">
-            <div className="p-1 w-1/6 flex justify-center">
+            <div className="p-1 width-10 flex justify-center">
               <button
-                className="text-sky-800"
+                className="icon icon-footer"
                 type="button"
                 style={{ transition: "all .15s ease" }}
                 onClick={() => setModalOpen(true)}
               >
-                <FontAwesomeIcon icon={faFileImport} size="2x" />
+                <FontAwesomeIcon
+                  icon={faFileImport}
+                  size={"2x"}
+                  className={`${get_current_icon_class()}`}
+                  mask={
+                    localStorage.getItem("theme") === "dark"
+                      ? undefined
+                      : faSquareFull
+                  }
+                />
+              </button>
+            </div>
+            <div
+              className={`rounded width-100 m-auto ${
+                localStorage.getItem("theme") === "dark" ? "" : "search-field"
+              }`}
+            >
+              <div className="input-container" style={{ position: "relative" }}>
+                <input
+                  ref={inputRef}
+                  value={prompt}
+                  className="outline-0 rounded span w-full height-footer-fields px-2 overflow-x-auto dark:bg-neutral-800 focus:dark:bg-neutral-700 ease-in transition"
+                  placeholder="Type your prompt here..."
+                  onKeyDown={handleEnterPress}
+                  onChange={(e) => {
+                    if (e.target.value.trim().length > 0) {
+                      setPrompt(e.target.value);
+                      if (inputRef.current) {
+                        inputRef.current.style.borderColor = "unset";
+                      }
+                    } else {
+                      if (inputRef.current) {
+                        inputRef.current.placeholder =
+                          "Your Prompt should not be empty";
+                        setPrompt("");
+                      }
+                    }
+                  }}
+                />
+                <button
+                  className="icon-search-field"
+                  onClick={handleSpeechToText}
+                  style={{
+                    position: "absolute",
+                    right: "10px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    backgroundColor: "transparent",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  <FontAwesomeIcon
+                    icon={faMicrophone}
+                    size={"2x"}
+                    className={`${get_current_icon_class()}`}
+                    mask={
+                      localStorage.getItem("theme") === "dark"
+                        ? undefined
+                        : faSquareFull
+                    }
+                  />
+                </button>
+              </div>
+            </div>
+            <div className="p-1 width-10">
+              <button
+                className={`${
+                  localStorage.getItem("theme") === "dark"
+                    ? "border-solid bg-neutral-800 text-white"
+                    : "bg-neutral-100 text-black"
+                } box-border rounded p-2 w-full`}
+                onClick={async (e) => {
+                  e.preventDefault();
+                  sendPrompt(prompt);
+                }}
+                type="button"
+              >
+                Search
               </button>
             </div>
           </div>
-          <div className="rounded w-4/5 m-auto">
-            <input
-              ref={inputRef}
-              value={prompt}
-              className="outline-0 border-solid border-2 rounded span w-full height-footer-fields px-2 overflow-x-auto dark:bg-gray-800"
-              placeholder="Type your prompt here..."
-              onKeyDown={handleEnterPress}
-              onChange={(e) => {
-                if (e.target.value.trim().length > 0) {
-                  setPrompt(e.target.value);
-                  if (inputRef.current) {
-                    inputRef.current.style.borderColor = "unset";
-                  }
-                } else {
-                  if (inputRef.current) {
-                    inputRef.current.placeholder =
-                      "Your Prompt should not be empty";
-                    setPrompt("");
-                  }
-                }
-              }}
-            />
-          </div>
-          <div className="p-1 w-1/6">
-            <button
-              className="box-border bg-blue-500 rounded p-2 w-full"
-              onClick={async (e) => {
-                e.preventDefault();
-                sendPrompt(prompt);
-              }}
-              type="button"
-            >
-              Search
-            </button>
-          </div>
         </div>
+        <small className="flex justify-center dark:bg-black">
+          Disclaimer: AI generated content maybe inaccurate, Please verify it
+          from source.
+        </small>
       </div>
     </>
   );

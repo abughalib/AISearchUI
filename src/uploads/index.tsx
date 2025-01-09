@@ -72,14 +72,14 @@ const UploadWindow: React.FC<ModelProps> = ({ isOpen, onClose }) => {
 
   return (
     <div
-      className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
+      className="fixed inset-0 bg-neutral-600 bg-opacity-50 overflow-y-auto h-full w-full"
       id="upload_modal"
       ref={modalRef}
       onClick={closeModel}
     >
       <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-black dark:text-white">
         <div className="mt-3 text-center">
-          <h3 className="text-lg leading-6 font-medium">Upload File</h3>
+          <h3 className="text-2xl leading-6 font-medium">Upload File</h3>
           <div className="mt-2 px-7 py-3">
             <input
               type="file"

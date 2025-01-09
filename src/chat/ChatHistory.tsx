@@ -1,8 +1,12 @@
-import { faPlus, faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPlus,
+  faSquareFull,
+  faXmarkCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef } from "react";
 import { useActions } from "../hooks/use-actions";
-import { getSessionId } from "../App";
+import { get_current_icon_class, getSessionId } from "../App";
 import { ChatList } from "../header/header";
 
 interface ChatWindowProps {
@@ -43,15 +47,17 @@ const chatHistory: React.FC<ChatWindowProps> = ({
   return (
     <div
       ref={historyRef}
-      className="fixed top-0 left-0 h-full w-64 bg-zinc-50 dark:bg-gray-800 dark:text-white overflow-auto"
+      className="fixed top-0 left-0 h-full w-64 bg-neutral-50 dark:bg-neutral-950 dark:text-neutral-300 overflow-auto"
     >
-      <button
-        className="absolute top-0 right-0 m-2"
-        type="button"
-        onClick={onClose}
-      >
-        <FontAwesomeIcon icon={faXmarkCircle} />
-      </button>
+      <a className="absolute top-0 right-0 m-2" type="button" onClick={onClose}>
+        <FontAwesomeIcon
+          icon={faXmarkCircle}
+          className={`${get_current_icon_class()}`}
+          mask={
+            localStorage.getItem("theme") === "dark" ? undefined : faSquareFull
+          }
+        />
+      </a>
       <div className="my-2 flex justify-center font-bold">
         <p>Chat History</p>
       </div>
@@ -76,7 +82,7 @@ const chatHistory: React.FC<ChatWindowProps> = ({
             placeholder="Enter New Title"
           />
         </div>
-        <div className="shadow-lg m-1 p-2 text-center rounded-md hover:bg-blue-600">
+        <div className="shadow-lg m-1 p-2 text-center rounded-md">
           <a
             href="#"
             className="flex justify-center items-center gap-2"
@@ -100,7 +106,16 @@ const chatHistory: React.FC<ChatWindowProps> = ({
               }
             }}
           >
-            Start New <FontAwesomeIcon icon={faPlus} />
+            Start New{" "}
+            <FontAwesomeIcon
+              icon={faPlus}
+              className={`${get_current_icon_class()}`}
+              mask={
+                localStorage.getItem("theme") === "dark"
+                  ? undefined
+                  : faSquareFull
+              }
+            />
           </a>
         </div>
       </div>

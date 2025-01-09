@@ -14,4 +14,5 @@ export enum ActionType {
   REPEAT_LAST_N = "repeat_last_n",
   SET_SESSION = "set_session",
   SET_SEARCHING = "set_searching",
+  SET_SYSTEM_MESSAGE = "set_system_message",
 }
